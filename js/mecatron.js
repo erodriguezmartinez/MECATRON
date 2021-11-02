@@ -25,8 +25,9 @@ class Juego{
     //console.log(this)
     this.divPrincipal = document.getElementById('divPrincipal');
     this.vista.div=this.divPrincipal;
-    this.generadorPalabras=window.setInterval(this.generarPalabra.bind(this),1000);
-    this.animador=window.setInterval(this.vista.moverPalabra.bind(this.vista),100);
+    this.generadorPalabras=window.setInterval(this.generarPalabra.bind(this),3000);
+    this.animador=window.setInterval(this.vista.moverPalabra.bind(this.vista),300);
+    window.onkeypress=this.pulsar.bind(app);
   }
   /**
     Generador de generador de palabras
@@ -37,13 +38,42 @@ class Juego{
     this.vista.dibujar(nuevaPalabra);
   }
 
+  pulsar(evento){
+    let letraPulsada = evento.key;
+    //console.log("Evento capturado "+letraPulsada);
+    //Busca todas las palabras que aparecen en el momento de pulsar
+    let palabras=this.divPrincipal.querySelectorAll('.palabra');
+    for(let palabra of palabras){
+      let span= palabra.children.item(0);
+      let nodoTexto= palabra.childNodes[1];
+      let textoRestante= nodoTexto.nodeValue;
+      let primeraLetraTextoRestante= textoRestante.charAt(0);
+      //Comparamos la letra pulsada con la primera letra de las palabras visualizadas
+      if(letraPulsada == primeraLetraTextoRestante){
+        span.textContent += letraPulsada;
+        nodoTexto.nodeValue = textoRestante.substring(1)
+
+        //Si ha completado la palabra, lo eliminio y sumo puntos
+        if(nodoTexto.nodeValue.length==0){
+          palabra.remove();
+          this.modelo.sumarPunto(); /////ACABAR
+        }
+      }else{
+        //Ha fallado, repondo el texto de la palábra
+        nodoTexto.nodeValue=span.textContent+nodoTexto.nodeValue;
+        span.textContent='';
+      }
+
+    }
+  }
+
 }
 /**
   Clase Vista que muestra el juego
   **/
 class Vista{
   constructor(){
-      this.div=null;
+      this.div=null;  //div donde se desarrolla el juego
   }
   /**
     Dibuja el área de Juego
@@ -52,6 +82,8 @@ class Vista{
   dibujar(nuevaPalabra){
     let div=document.createElement('div');
     this.div.appendChild(div);
+    let span = document.createElement('span');
+    div.appendChild(span);
     div.appendChild(document.createTextNode(nuevaPalabra))
     div.classList.add('palabra')
     //TODO aleatorio
@@ -81,7 +113,7 @@ class Vista{
 **/
 class Modelo{
   constructor(){
-      this.palabras=['caballo','moto','castillo','escuela','palmera','zapatilla','botella']
+      this.palabras=['caballo','moto','castillo','escuela','palmera','zapatilla','botella','gafas','teléfono','mesa']
   }
     /**
       Devuelve una nueva palabra
