@@ -1,4 +1,5 @@
-/**mecatron.js
+/**
+ * @file
 Juego de MECATRON.
 @author Esperanza Rogríguez Martínez <erodriguezmartinez.guadalupe@alumnado.fundacionloyola.net>.
 @License GPL v3 o superior.
@@ -37,7 +38,11 @@ class Juego{
     let nuevaPalabra=this.modelo.crearPalabra();
     this.vista.dibujar(nuevaPalabra);
   }
-
+  /**
+   * Evento de antención a la pulsación del teclado.
+   * 
+   * @param {KeyboardEvent} evento Evento de la pulsación del teclado.
+   */
   pulsar(evento){
     let letraPulsada = evento.key;
     //console.log("Evento capturado "+letraPulsada);
@@ -116,8 +121,9 @@ class Modelo{
       this.palabras=['caballo','moto','castillo','escuela','palmera','zapatilla','botella','gafas','teléfono','mesa']
   }
     /**
-      Devuelve una nueva palabra
-      @return (String) Palabra generada
+      Devuelve una nueva palabra.
+      Devuelve aleatoriamente un elemento del array de palabras.
+      @return (String) Palabra generada.
       **/
     crearPalabra(){
       return this.palabras[Math.floor(Math.random()*this.palabras.length)]
