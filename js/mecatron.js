@@ -24,6 +24,7 @@ class Juego{
   iniciar(){
     //console.log("Iniciando...");
     //console.log(this)
+
     this.divPrincipal = document.getElementById('divPrincipal');
     this.vista.div=this.divPrincipal;
     this.generadorPalabras=window.setInterval(this.generarPalabra.bind(this),3000);
@@ -61,7 +62,8 @@ class Juego{
         //Si ha completado la palabra, lo eliminio y sumo puntos
         if(nodoTexto.nodeValue.length==0){
           palabra.remove();
-          this.modelo.sumarPunto(); /////ACABAR
+          let puntos=this.modelo.sumarPunto(); /////ACABAR
+          this.vista.dibujarPuntos(puntos); 
         }
       }else{
         //Ha fallado, repondo el texto de la palábra
@@ -94,7 +96,21 @@ class Vista{
     //TODO aleatorio
     div.style.top='0px';
     div.style.left=Math.floor(Math.random()*85)+'%';
+
   }
+  dibujarPuntos(puntos){
+    
+    let divPuntos=document.getElementById('divPuntos');
+
+    while(divPuntos.firstElementChild){   //Miestras que div tenga un primer hijo que borre a este
+      divPuntos.removeChild(divPuntos.firstElementChild);
+    }
+  
+    let dibujarPuntos = document.createElement('p');
+    divPuntos.appendChild(dibujarPuntos);
+    dibujarPuntos.appendChild(document.createTextNode(puntos));
+  }
+
   /**
     Movimiento de la palabra hacia abajo
     **/
@@ -108,6 +124,11 @@ class Vista{
       let top=parseInt(palabra.style.top);
       top+=5;
       palabra.style.top=`${top}px`;
+      
+      //Cuando la palabra llega abajo del todo de la pantalla,esta se borra
+      if(top==780){
+        palabra.remove();
+      }
     }
   //  let nuevaPalabra=this.modelo.crearPalabra();
     //this.vista.dibujar(this.divPrincipal,nuevaPalabra);
@@ -119,7 +140,8 @@ class Vista{
 class Modelo{
   constructor(){
       this.palabras=['caballo','moto','castillo','escuela','palmera','zapatilla','botella','gafas','teléfono','mesa']
-  }
+      this.puntos=0;
+    }
     /**
       Devuelve una nueva palabra.
       Devuelve aleatoriamente un elemento del array de palabras.
@@ -128,7 +150,9 @@ class Modelo{
     crearPalabra(){
       return this.palabras[Math.floor(Math.random()*this.palabras.length)]
     }
+    sumarPunto(){
+      return this.puntos+=1;  
+    }
 }
-
 
 var app = new Juego();
